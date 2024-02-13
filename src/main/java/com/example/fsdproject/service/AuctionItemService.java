@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class AuctionItemService {
 
@@ -25,6 +27,24 @@ public class AuctionItemService {
     public List<AuctionItem> findByUserId(Long userId) {
         return auctionItemRepository.findByUser_Id(userId);
     }
+
+    public Optional<AuctionItem> findAuctionItemById(Long itemId) {
+        return auctionItemRepository.findById(itemId);
+    }
+
+    public void updateCurrentBid(Long itemId, double newBidAmount) {
+        Optional<AuctionItem> optionalAuctionItem = auctionItemRepository.findById(itemId);
+
+        if (optionalAuctionItem.isPresent()) {
+            AuctionItem auctionItem = optionalAuctionItem.get();
+            auctionItem.setCurrentBid(newBidAmount);
+            auctionItemRepository.save(auctionItem);
+        } else {
+            // Handle the case where the item with the given ID is not found
+            throw new IllegalArgumentException("AuctionItem with ID " + itemId + " not found");
+        }
+    }
+
 }
 
 
