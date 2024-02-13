@@ -9,6 +9,13 @@ const ItemList = ({ user }) => {
     const navigate = useNavigate();
     const [items, setItems] = useState([]);
 
+    const [username, setUsername] = useState('');
+    const [bidAmount, setBidAmount] = useState('');
+    const [selectedItem, setSelectedItem] = useState(null); // Track the selected item
+    const [userobj, setUserobj]=useState({});
+    const [itemId,setItemId]=useState('');
+    const [item,setItem]=useState({});
+
     useEffect(() => {
         fetchItems();
     }, []);
@@ -22,13 +29,119 @@ const ItemList = ({ user }) => {
         }
     };
 
-    const handlePlaceBid = (itemId) => {
-        if (user) {
-            console.log(`Placing bid for item ${itemId} as user ${user.username}`);
-            // Implement logic to place a bid
-        } else {
-            console.log('Redirecting to login page');
-            // Implement logic to redirect to the login page
+    useEffect(() => {
+        const token = sessionStorage.getItem('token');
+        const [username, expirationTimestamp] = token.split('|');
+        setUsername(username);
+        console.log('Username:', username);
+    }, []);
+
+
+    const fetchUserByUsername = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/users/${username}`);
+
+            if (response.ok) {
+                const userData = await response.json();
+                setUserobj(userData);
+                console.log("user set: ",userData);
+                return userData;
+            } else {
+                const errorData = await response.json();
+                console.error('Error:', errorData.error);
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
+
+    const fetchItemByItemId = async (itemId) => {
+        try {
+            console.log("Item called");
+            const response = await fetch(`http://localhost:8080/api/${itemId}`);
+
+            if (response.ok) {
+                const itemData = await response.json();
+                setItem(itemData);
+                console.log("item set: ",itemData);
+                return itemData;
+            } else {
+                const errorData = await response.json();
+                console.error('Error:', errorData.error);
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
+
+
+    // useEffect(() => {
+    //     const fetchUserByUsername = async () => {
+    //         try {
+    //             console.log("Before send "+username);
+    //             const response = await fetch(`http://localhost:8080/api/users/${username}`);
+    //
+    //             if (response.ok) {
+    //                 const userData = await response.json();
+    //                 setUsert(userData);
+    //                 console.log("set to user: ",usert);
+    //             } else {
+    //                 // Handle error response
+    //                 const errorData = await response.json();
+    //                 console.error('Error:', errorData.error);
+    //             }
+    //         } catch (error) {
+    //             // Handle network errors or other exceptions
+    //             console.error('Error:', error.message);
+    //         }
+    //     };
+    //     fetchUserByUsername();
+    // }, [username]);
+
+    // useEffect(() => {
+    //     const fetchItemByItemname = async () => {
+    //         try {
+    //             console.log("Before send "+itemId);
+    //             const response = await fetch(`http://localhost:8080/api/${itemId}`);
+    //
+    //             if (response.ok) {
+    //                 const itemData = await response.json();
+    //                 setItem(itemData);
+    //                 console.log("set to item: ",itemData);
+    //             } else {
+    //                 // Handle error response
+    //                 const errorData = await response.json();
+    //                 console.error('Error:', errorData.error);
+    //             }
+    //         } catch (error) {
+    //             console.error('Error:', error.message);
+    //         }
+    //     };
+    //     fetchItemByItemname();
+    // }, [itemId]);
+
+    const handlePlaceBid = async (itemId) => {
+        try {
+
+           const userData= await fetchUserByUsername();
+          const itemData=await fetchItemByItemId(itemId);
+
+
+            console.log("Sending Request for bid with user: ",userData+ " amount: "+bidAmount+" for item: "+itemData);
+
+            const response = await axios.post(`http://localhost:8080/api/placebid`, {
+                item:itemData,
+                amount: bidAmount,
+                bidder: userData,
+            });
+
+            console.log(`Bid placed successfully for item ${itemId}. Response:`, response.data);
+
+            // Reset the bidAmount and selected item after placing the bid
+            setBidAmount('');
+            setSelectedItem(null);
+        } catch (error) {
+            console.error('Error placing bid:', error);
         }
     };
 
@@ -65,7 +178,23 @@ const ItemList = ({ user }) => {
                         <p>Current Bid: {item.currentBid}</p>
                         <p>Starting Price: {item.startingPrice}</p>
 
-                        <button onClick={() => handlePlaceBid(item.id)}>Place Bid</button>
+                        {/* Display bid input only for the selected item */}
+                        {selectedItem === item.id && (
+                            <div>
+                                <input
+                                    type="text"
+                                    placeholder="Enter Bid Amount"
+                                    value={bidAmount}
+                                    onChange={(e) => setBidAmount(e.target.value)}
+                                />
+                                <button onClick={() => handlePlaceBid(item.id)}>Place Bid</button>
+                            </div>
+                        )}
+
+                        {/* Show Place Bid button only if bid input is not already displayed */}
+                        {selectedItem !== item.id && (
+                            <button onClick={() => setSelectedItem(item.id)}>Place Bid</button>
+                        )}
                     </li>
                 ))}
             </ul>

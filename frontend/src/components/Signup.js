@@ -40,6 +40,7 @@ const Signup = () => {
                 // Handle success
                 const responseData = await response.json();
                 console.log(responseData.data);
+
             } else {
                 // Handle error
                 const errorData = await response.json();

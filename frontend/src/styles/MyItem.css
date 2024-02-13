@@ -6,7 +6,7 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 600px;
     margin: 20px auto;
-    margin-top: 2000px;
+    margin-top: 700px;
 }
 
 .navbar {
@@ -55,16 +55,7 @@ ul {
     margin-bottom: 15px;
 }
 
-button {
-    background-color: #3498db;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 8px 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-top: 10px;
-}
+
 
 button:hover {
     background-color: #2980b9;
