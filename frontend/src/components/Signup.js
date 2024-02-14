@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import '../styles/Signup.css';
 
+
 const Signup = () => {
     const [user, setUser] = useState({
         username: '',
@@ -24,7 +25,7 @@ const Signup = () => {
 
         try {
             // Make a POST request to the signup endpoint
-            const response = await fetch('http://localhost:8080/api/users/signup', {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}`+"/api/users/signup", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

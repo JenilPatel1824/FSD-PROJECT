@@ -20,7 +20,7 @@ const AddItem = () => {
         const fetchUserByUsername = async () => {
             try {
                 console.log("Before send "+username);
-                const response = await fetch(`http://localhost:8080/api/users/${username}`);
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${username}`);
 
                 if (response.ok) {
                     const userData = await response.json();
@@ -76,7 +76,7 @@ const AddItem = () => {
         console.log("sending with: ", itemData);
         console.log("User object", itemData.user);
         try {
-            const response = await fetch('http://localhost:8080/api/add-item', {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/add-item`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

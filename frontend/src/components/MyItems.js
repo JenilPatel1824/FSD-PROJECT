@@ -26,7 +26,7 @@ const MyItems = ({ user }) => {
 
     const fetchBidByItemId = async (itemId) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/bids/${itemId}`);
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/bids/${itemId}`);
 
             if (response.ok) {
                 const bidData = await response.json();
@@ -43,7 +43,7 @@ const MyItems = ({ user }) => {
 
     const fetchItems = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/my-items?username=${username}`);
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/my-items?username=${username}`);
             setItems(response.data.data);
         } catch (error) {
             console.error('Error fetching items:', error.response?.status, error.response?.data);
@@ -52,7 +52,7 @@ const MyItems = ({ user }) => {
 
     const handleCheckBid = async (itemId) => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/bids/getbids?itemId=${itemId}`);
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/bids/getbids?itemId=${itemId}`);
             setBid({ itemId, bids: response.data.data });
             setDisplayBids((prevDisplayBids) => ({
                 ...prevDisplayBids,
@@ -88,7 +88,7 @@ const MyItems = ({ user }) => {
                 bid: bidData,
                 sold: true,
             };
-            const response = await axios.post(`http://localhost:8080/api/sell/sellitem`, sell);
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/sell/sellitem`, sell);
             // Update the items after selling
             fetchItems();
         } catch (error) {
