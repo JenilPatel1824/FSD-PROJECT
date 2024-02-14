@@ -6,7 +6,7 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 600px;
     margin: 20px auto;
-    margin-top: 700px;
+    margin-top: 580px;
 }
 
 .navbar {
@@ -70,3 +70,21 @@ button:hover {
 .add-item-button:hover {
     background-color: #218c53;
 }
+
+/* Add this style to your CSS or in a separate stylesheet */
+/* Add this style to your CSS or in a separate stylesheet */
+.sold {
+    background-color: lightgreen;  /* Adjust the background color as needed */
+}
+
+.sold-icon {
+    color: green;
+    margin-left: 10px;  /* Adjust the spacing as needed */
+    font-weight: bold;
+}
+
+
+.highest-bid {
+    color: red; /* Set the color to red for the highest bid */
+}
+

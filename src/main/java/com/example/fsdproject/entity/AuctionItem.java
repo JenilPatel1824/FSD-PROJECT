@@ -15,6 +15,8 @@ public class AuctionItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+
     @Column(name = "item_name")
     private String itemName;
 
@@ -34,6 +36,19 @@ public class AuctionItem {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
     private Date createdAt;
+
+
+    private boolean status;
+
+    public boolean getStatus() {
+        return status;
+    }
+
+
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 
     public Date getCreatedAt() {
         return createdAt;

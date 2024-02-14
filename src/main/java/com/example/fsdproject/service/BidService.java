@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BidService {
@@ -20,6 +21,11 @@ public class BidService {
     public List<Bid> findByItemId(long itemId)
     {
         return bidRepository.findByItemId(itemId);
+    }
+
+    public Optional<Bid> getHighestBidByItemId(Long itemId) {
+        List<Bid> bids = bidRepository.findByItemIdOrderByAmountDesc(itemId);
+        return bids.isEmpty() ? Optional.empty() : Optional.of(bids.get(0));
     }
 
 }

@@ -1,10 +1,14 @@
-// components/ItemList.js
+// components/MyItems.js
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import BidTable from './BidTable';
 import '../styles/MyItem.css';
+import {computeHeadingLevel} from "@testing-library/react";
+
 
 const MyItems = ({ user }) => {
     const navigate = useNavigate();
@@ -12,12 +16,30 @@ const MyItems = ({ user }) => {
     const [bid, setBid] = useState({ itemId: null, bids: [] });
     const [username, setUsername] = useState();
     const [displayBids, setDisplayBids] = useState({});
+    const [highestId,setHighestId]=useState('');
 
     useEffect(() => {
         const token = sessionStorage.getItem('token');
         const [username, expirationTimestamp] = token.split('|');
         setUsername(username);
     }, []);
+
+    const fetchBidByItemId = async (itemId) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/bids/${itemId}`);
+
+            if (response.ok) {
+                const bidData = await response.json();
+                console.log("item set: ", bidData);
+                return bidData;
+            } else {
+                const errorData = await response.json();
+                console.error('Error:', errorData.error);
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
 
     const fetchItems = async () => {
         try {
@@ -36,21 +58,41 @@ const MyItems = ({ user }) => {
                 ...prevDisplayBids,
                 [itemId]: !prevDisplayBids[itemId],
             }));
+
+            console.log("r done");
+            let highestbid=0;
+
+            for (let bd of bid.bids)
+            {
+                console.log(bd);
+                if(bd.amount>highestbid)
+                {
+
+                    highestbid=bd.amount;
+                    setHighestId(bd.id);
+                }
+            }
+            console.log("highest bid id: ",highestId);
+            console.log("highest bid is: ",highestbid);
         } catch (error) {
             console.error('Error fetching bids:', error.response?.status, error.response?.data);
         }
     };
 
-    const handleSale = async (itemId) => {
+    const handleSell = async (itemId) => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/bids/getbids?itemId=${itemId}`);
-            setBid({ itemId, bids: response.data.data });
-            setDisplayBids((prevDisplayBids) => ({
-                ...prevDisplayBids,
-                [itemId]: !prevDisplayBids[itemId],
-            }));
+            const bidData = await fetchBidByItemId(itemId);
+            console.log(bidData);
+
+            const sell = {
+                bid: bidData,
+                sold: true,
+            };
+            const response = await axios.post(`http://localhost:8080/api/sell/sellitem`, sell);
+            // Update the items after selling
+            fetchItems();
         } catch (error) {
-            console.error('Error fetching bids:', error.response?.status, error.response?.data);
+            console.error('Error selling item:', error.response?.status, error.response?.data);
         }
     };
 
@@ -74,23 +116,34 @@ const MyItems = ({ user }) => {
 
             <ul className="item-list">
                 {items.map((item) => (
-                    <li key={item.id} className={`item-card ${displayBids[item.id] ? 'selected' : ''}`}>
-                        <h3>{item.itemName}</h3>
+                    <li
+                        key={item.id}
+                        className={`item-card ${item.status ? 'sold' : ''}`}
+                    >
+                        <h3>
+                            <span style={{ color: item.status ? 'green' : 'black' }}>
+                                {item.itemName}
+                            </span>
+                            {item.status && <FontAwesomeIcon icon={faCheck} className="sold-icon" />}
+                        </h3>
                         <p>Description: {item.description}</p>
-                        <p>Current Bid: {item.currentBid}</p>
-                        <p>Starting Price: {item.startingPrice}</p>
+                        <p>Current Bid: ${item.currentBid.toFixed(2)}</p>
+                        <p>Starting Price: ${item.startingPrice.toFixed(2)}</p>
 
                         <button onClick={() => handleCheckBid(item.id)}>
                             {displayBids[item.id] ? 'Hide Bids' : 'Check Bids'}
                         </button>
 
+
                         {displayBids[item.id] && bid.itemId === item.id && bid.bids.length > 0 && (
-                            <BidTable bids={bid.bids}/>
+                            <BidTable bids={bid.bids} highlightedBidId={highestId} />
                         )}
-                        <button onClick={handleSale(item.itemId)}>Sell</button>
 
+                        {/* Render "Sell" button only if item.status is false */}
+                        {!item.status && (
+                            <button onClick={() => handleSell(item.id)}>Sell</button>
+                        )}
                     </li>
-
                 ))}
             </ul>
         </div>

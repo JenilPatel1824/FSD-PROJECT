@@ -2,6 +2,7 @@ package com.example.fsdproject.controller;
 
 import com.example.fsdproject.entity.AuctionItem;
 import com.example.fsdproject.entity.Bid;
+import com.example.fsdproject.service.AuctionItemService;
 import com.example.fsdproject.service.BidService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -23,6 +25,10 @@ public class BidController {
 
     @Autowired
     private BidService bidService;
+
+    @Autowired
+    private AuctionItemService auctionItemService;
+
 
 
 
@@ -45,4 +51,30 @@ public class BidController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/{itemId}")
+    public ResponseEntity<?> getUserByUsername(@PathVariable long itemId) {
+        try {
+            Optional<Bid> bid = bidService.getHighestBidByItemId(itemId);
+
+            if (bid != null) {
+                // Return the user object if found
+                return ResponseEntity.ok(bid);
+            } else {
+                // Return a response indicating that the user was not found
+                Map<String, String> response = new HashMap<>();
+                response.put("error", "bid not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (Exception e) {
+            // Handle other exceptions if needed
+            Map<String, String> response = new HashMap<>();
+            response.put("error", "Error during user retrieval");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+
 }

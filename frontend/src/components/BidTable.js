@@ -3,7 +3,7 @@
 import React from 'react';
 import '../styles/BidTable.css';
 
-const BidTable = ({ bids }) => {
+const BidTable = ({ bids, highlightedBidId }) => {
     return (
         <div className="bid-table-container">
             <h4>Bids for Item</h4>
@@ -19,7 +19,7 @@ const BidTable = ({ bids }) => {
                 </thead>
                 <tbody>
                 {bids.map((bid) => (
-                    <tr key={bid.id}>
+                    <tr key={bid.id} className={bid.id === highlightedBidId ? 'highlighted-bid' : ''}>
                         <td>${bid.amount.toFixed(2)}</td>
                         <td>{new Date(bid.bidTime).toLocaleString()}</td>
                         <td>{bid.bidder.username}</td>
