@@ -1,7 +1,9 @@
 package com.example.fsdproject.service;
 
 import com.example.fsdproject.entity.Bid;
+import com.example.fsdproject.entity.Sell;
 import com.example.fsdproject.repository.BidRepository;
+import com.example.fsdproject.repository.SellRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,14 @@ public class BidService {
     public Optional<Bid> getHighestBidByItemId(Long itemId) {
         List<Bid> bids = bidRepository.findByItemIdOrderByAmountDesc(itemId);
         return bids.isEmpty() ? Optional.empty() : Optional.of(bids.get(0));
+    }
+
+
+    @Autowired
+    private SellRepository sellRepository;
+
+    public List<Sell> getSoldItemByUsername(String username) {
+        return sellRepository.findBidsByUsername(username);
     }
 
 }

@@ -13,8 +13,11 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "${allowed.origins}")
 @RequestMapping("/api/sell")
 public class SellController {
 
@@ -28,7 +31,7 @@ public class SellController {
     private JavaMailSender javaMailSender;
 
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "${allowed.origins}")
     @PostMapping("/sellitem")
     public ResponseEntity<?> sellItem(@RequestBody Sell sell) {
         try {
@@ -43,6 +46,8 @@ public class SellController {
 
 
             auctionItemService.saveAuctionItem((item));
+            sell.setPayment(false);
+
             sellService.saveSell(sell);
 
             String winningBidderEmail=sell.getBid().getBidder().getEmail();
@@ -69,6 +74,37 @@ public class SellController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping("/pay")
+    public ResponseEntity<?> pay(@RequestParam long sellId) {
+
+        System.out.println("Sell id is: "+sellId);
+
+        Optional<Sell> optionalSell=sellService.findById(sellId);
+
+        if (optionalSell.isPresent()) {
+            Sell sell = optionalSell.get();
+            boolean payment = sell.getPayment();
+
+
+            sell.setPayment(true);
+            System.out.println("Sell payment is: "+sell.getPayment());
+
+            sell.setPaymentTimestamp(LocalDateTime.now());  // Set payment timestamp
+            sellService.saveSell((sell));
+
+
+
+            return ResponseEntity.ok("Payment successful");
+        } else {
+            // Handle the case where the Sell entity is not found
+            return ResponseEntity.notFound().build();
+        }
+
+    }
+
+
 
     private void sendEmail(String to, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();

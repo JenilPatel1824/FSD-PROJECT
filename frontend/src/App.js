@@ -9,6 +9,7 @@ import AddItem from './components/AddItem';
 import Welcome from "./components/Welcome";
 import DefaultPage from "./components/DefaultPage";
 import MyItems from "./components/MyItems";
+import UserHistory from "./components/UserHistory";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -28,6 +29,8 @@ const App = () => {
 
           <Routes>
             <Route path="/login" element={<Login setUser={setUser} />} />
+            <Route path="/user-history" element={<UserHistory setUser={setUser} />} />
+
             <Route path="/signup" element={<Signup setUser={setUser} />} />
             <Route path="/add-item" element={<AddItem /> } />
             <Route path="/item" element={<ItemList user={user} />} />

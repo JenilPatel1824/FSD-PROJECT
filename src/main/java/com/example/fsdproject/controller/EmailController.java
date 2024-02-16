@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "${allowed.origins}")
 
 @RequestMapping("/email")
 public class EmailController {
@@ -13,7 +13,7 @@ public class EmailController {
     @Autowired
     private EmailService emailService;
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "${allowed.origins}")
     @PostMapping("/send")
     public String sendEmail(
             @RequestParam String to,

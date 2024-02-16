@@ -1,6 +1,7 @@
 package com.example.fsdproject.service;
 
 import com.example.fsdproject.entity.AuctionItem;
+import com.example.fsdproject.entity.User;
 import com.example.fsdproject.repository.AuctionItemRepository;
 import com.example.fsdproject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,13 @@ public class AuctionItemService {
             // Handle the case where the item with the given ID is not found
             throw new IllegalArgumentException("AuctionItem with ID " + itemId + " not found");
         }
+    }
+
+    public List<AuctionItem> findItemsNotOwnedByUser(User user) {
+        // Implement logic to retrieve items not owned by the specified user
+        // You can use your repository or directly query the database
+        // Here, I assume you have a method like 'findAllByUserNot' in your repository
+        return auctionItemRepository.findAllByUserNot(user);
     }
 
 }

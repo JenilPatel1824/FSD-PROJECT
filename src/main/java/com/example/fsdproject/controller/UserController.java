@@ -20,7 +20,7 @@ import org.springframework.http.HttpStatus;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "${allowed.origins}")
 @RequestMapping("/api/users")
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -31,13 +31,13 @@ public class UserController {
 
 
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "${allowed.origins}")
     @GetMapping("/hello")
     public String getHello() {
         return "Hello from the server!";
     }
 
-
+    @CrossOrigin(origins = "${allowed.origins}")
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody User user) {
         try {
@@ -69,8 +69,7 @@ public class UserController {
 
 
 
-
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "${allowed.origins}")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User loginRequest) {
 
@@ -95,7 +94,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "${allowed.origins}")
     @GetMapping("/{username}")
     public ResponseEntity<?> getUserByUsername(@PathVariable String username) {
         try {

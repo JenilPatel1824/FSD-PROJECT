@@ -13,28 +13,36 @@ const ItemList = ({ user }) => {
     const [bidAmount, setBidAmount] = useState('');
     const [selectedItem, setSelectedItem] = useState(null);
     const [userobj, setUserobj] = useState({});
+    const [userHistory, setUserHistory] = useState([]);
+
     const [itemId, setItemId] = useState('');
     const [item, setItem] = useState({});
 
     useEffect(() => {
         fetchItems();
-    }, []);
+    }, [username]);
 
-    const fetchItems = async () => {
-        try {
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/items`);
-            setItems(response.data.data);
-        } catch (error) {
-            console.error('Error fetching items:', error);
-        }
-    };
+    let guname;
 
     useEffect(() => {
         const token = sessionStorage.getItem('token');
         const [username, expirationTimestamp] = token.split('|');
         setUsername(username);
         console.log('Username:', username);
+        guname=username;
     }, []);
+
+    const fetchItems = async () => {
+        try {
+            console.log("===>>>>"+username);
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/items?username=${username}`);
+            setItems(response.data.data);
+        } catch (error) {
+            console.error('Error fetching items:', error);
+        }
+    };
+
+
 
     const fetchUserByUsername = async () => {
         try {
@@ -53,6 +61,29 @@ const ItemList = ({ user }) => {
             console.error('Error:', error.message);
         }
     };
+
+
+    const handleHistory = async () => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/bids/getSoldItemByUsername/${username}`);
+
+            if (response.ok) {
+                const userData = await response.json();
+                await setUserHistory(userData);
+                console.log(userHistory);
+                console.log("user set: ", userData);
+                navigate('/user-history', { state: { userData } });
+
+                return userHistory;
+            } else {
+                const errorData = await response.json();
+                console.error('Error:', errorData.error);
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
+
 
     const fetchItemByItemId = async (itemId) => {
         try {
@@ -115,6 +146,9 @@ const ItemList = ({ user }) => {
                     </button>
                     <button className="navbar-button" onClick={handleMyItems}>
                         My Items
+                    </button>
+                    <button className="navbar-button" onClick={handleHistory}>
+                        History
                     </button>
                 </div>
             </nav>

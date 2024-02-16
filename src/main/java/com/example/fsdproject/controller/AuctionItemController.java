@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 // AuctionItemController.java
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "${allowed.origins}")
 @RequestMapping("/api")
 public class AuctionItemController {
     private static final Logger logger = LoggerFactory.getLogger(AuctionItemController.class);
@@ -36,7 +36,7 @@ public class AuctionItemController {
     @Autowired
     private BidService bidService;
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "${allowed.origins}")
     @PostMapping("/add-item")
     public ResponseEntity<?> addAuctionItems(@RequestBody AuctionItem auctionItem) {
 
@@ -64,12 +64,15 @@ public class AuctionItemController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "${allowed.origins}")
     @GetMapping("/items")
-    public ResponseEntity<?> getAuctionItems() {
+    public ResponseEntity<?> getAuctionItems(@RequestParam String username) {
 
         try {
-            List<AuctionItem> auctionItems = auctionItemService.findAllItems();
+            System.out.println("no "+username);
+            User user = userService.findByUsername(username);
+
+            List<AuctionItem> auctionItems = auctionItemService.findItemsNotOwnedByUser(user);
 
 
             Map<String, Object> response = new HashMap<>();
@@ -83,7 +86,7 @@ public class AuctionItemController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "${allowed.origins}")
     @GetMapping("/my-items")
     public ResponseEntity<?> getMyAuctionItems(@RequestParam String username) {
         logger.info("Received myitem request for username: {}",username);
@@ -156,7 +159,7 @@ public class AuctionItemController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "${allowed.origins}")
     @GetMapping("/{itemId}")
     public ResponseEntity<?> getUserByUsername(@PathVariable long itemId) {
         try {

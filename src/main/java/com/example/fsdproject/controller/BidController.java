@@ -2,6 +2,7 @@ package com.example.fsdproject.controller;
 
 import com.example.fsdproject.entity.AuctionItem;
 import com.example.fsdproject.entity.Bid;
+import com.example.fsdproject.entity.Sell;
 import com.example.fsdproject.service.AuctionItemService;
 import com.example.fsdproject.service.BidService;
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ public class BidController {
 
 
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "${allowed.origins}")
     @GetMapping("/getbids")
     public ResponseEntity<?> getBids(@RequestParam long itemId) {
         logger.info("Received getBid request for Item: {}",itemId);
@@ -53,7 +54,7 @@ public class BidController {
     }
 
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "${allowed.origins}")
     @GetMapping("/{itemId}")
     public ResponseEntity<?> getUserByUsername(@PathVariable long itemId) {
         try {
@@ -74,6 +75,12 @@ public class BidController {
             response.put("error", "Error during user retrieval");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
+    }
+
+    @CrossOrigin(origins = "${allowed.origins}")
+    @GetMapping("/getSoldItemByUsername/{username}")
+    public List<Sell> getSoldItemByUsername(@PathVariable String username) {
+        return bidService.getSoldItemByUsername(username);
     }
 
 

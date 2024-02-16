@@ -6,6 +6,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class SellService {
 
@@ -16,6 +18,12 @@ public class SellService {
     public Sell saveSell(Sell sell)
     {
         return sellRepository.save(sell);
+
+    }
+
+    public Optional<Sell> findById(long sellid)
+    {
+        return sellRepository.findById(sellid);
 
     }
 
