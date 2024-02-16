@@ -43,7 +43,7 @@ const MyItems = ({ user }) => {
 
     const fetchItems = async () => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/my-items?username=${username}`);
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/auctionitems/my-items?username=${username}`);
             setItems(response.data.data);
         } catch (error) {
             console.error('Error fetching items:', error.response?.status, error.response?.data);

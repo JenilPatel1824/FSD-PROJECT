@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 // AuctionItemController.java
 @RestController
 @CrossOrigin(origins = "${allowed.origins}")
-@RequestMapping("/api")
+@RequestMapping("/api/auctionitems")
 public class AuctionItemController {
     private static final Logger logger = LoggerFactory.getLogger(AuctionItemController.class);
 

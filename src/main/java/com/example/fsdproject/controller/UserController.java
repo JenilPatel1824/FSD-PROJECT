@@ -31,7 +31,7 @@ public class UserController {
 
 
 
-    @CrossOrigin(origins = "${allowed.origins}")
+    @CrossOrigin(origins = "*")
     @GetMapping("/hello")
     public String getHello() {
         return "Hello from the server!";

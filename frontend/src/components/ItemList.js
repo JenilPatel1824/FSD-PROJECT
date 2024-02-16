@@ -35,7 +35,7 @@ const ItemList = ({ user }) => {
     const fetchItems = async () => {
         try {
             console.log("===>>>>"+username);
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/items?username=${username}`);
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/auctionitems/items?username=${username}`);
             setItems(response.data.data);
         } catch (error) {
             console.error('Error fetching items:', error);
@@ -88,7 +88,7 @@ const ItemList = ({ user }) => {
     const fetchItemByItemId = async (itemId) => {
         try {
             console.log("Item called");
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/${itemId}`);
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auctionitems/${itemId}`);
 
             if (response.ok) {
                 const itemData = await response.json();
@@ -111,7 +111,7 @@ const ItemList = ({ user }) => {
 
             console.log("Sending Request for bid with user: ", userData + " amount: " + bidAmount + " for item: " + itemData);
 
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/placebid`, {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auctionitems/placebid`, {
                 item: itemData,
                 amount: bidAmount,
                 bidder: userData,
