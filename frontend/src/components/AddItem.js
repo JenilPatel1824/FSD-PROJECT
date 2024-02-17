@@ -24,9 +24,9 @@ const AddItem = () => {
 
                 if (response.ok) {
                     const userData = await response.json();
-                    console.log("actual response ",userData);
+                    console.log("actual response from server ",userData);
                     setUser(userData);
-                    console.log("set to user: ",user);
+                    console.log("set to user hook: ",user);
                 } else {
                     // Handle error response
                     const errorData = await response.json();

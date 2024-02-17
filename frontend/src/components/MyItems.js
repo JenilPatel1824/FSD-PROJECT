@@ -75,7 +75,7 @@ const MyItems = ({ user }) => {
             console.log("highest bid id: ",highestId);
             console.log("highest bid is: ",highestbid);
         } catch (error) {
-            console.error('Error fetching bids:', error.response?.status, error.response?.data);
+            console.error('Error fetching bids from server:', error.response?.status, error.response?.data);
         }
     };
 
