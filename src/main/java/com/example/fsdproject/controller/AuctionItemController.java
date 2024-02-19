@@ -39,9 +39,9 @@ public class AuctionItemController {
     @CrossOrigin(origins = "${allowed.origins}")
     @PostMapping("/add-item")
     public ResponseEntity<?> addAuctionItems(@RequestBody AuctionItem auctionItem) {
-
+        logger.info("Received Add Item request for username: {}", auctionItem.getUser().getUsername());
+        System.out.println("Got req add itm");
         try {
-            logger.info("Received signup request for username: {}", auctionItem.getUser().getUsername());
 
 
             String username = auctionItem.getUser().getUsername();
@@ -49,9 +49,10 @@ public class AuctionItemController {
 
             // Set the user in the AuctionItem
             auctionItem.setUser(user);
+            double startingp=auctionItem.getStartingPrice();
+            auctionItem.setCurrentBid(startingp);
 
-            // Save the AuctionItem
-            auctionItemService.saveAuctionItem(auctionItem);
+
             auctionItemService.saveAuctionItem(auctionItem);
             Map<String, String> response = new HashMap<>();
             response.put("data", "item  registered successfully");
@@ -118,11 +119,19 @@ public class AuctionItemController {
         try {
 
             double amount=bid.getAmount();
-            long itemId=bid.getItem().getId();
-            auctionItemService.updateCurrentBid(itemId,amount);
 
-            bidService.placeBid(bid);
-            return ResponseEntity.ok("Bid placed successfully.");
+            long itemId=bid.getItem().getId();
+            double cbid=bid.getItem().getCurrentBid();
+            if(cbid < bid.getAmount()) {
+                auctionItemService.updateCurrentBid(itemId, amount);
+
+                bidService.placeBid(bid);
+                return ResponseEntity.ok("Bid placed successfully.");
+            }
+            else {
+                String errorMessage = "Please enter a bid amount greater than the current bid ";
+                return ResponseEntity.badRequest().body(errorMessage);
+            }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

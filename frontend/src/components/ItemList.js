@@ -116,13 +116,19 @@ const ItemList = ({ user }) => {
                 amount: bidAmount,
                 bidder: userData,
             });
+            if(response.ok) {
 
-            console.log(`Bid placed successfully for item ${itemId}. Response:`, response.data);
+                console.log(`Bid placed successfully for item ${itemId}. Response:`, response.data);
+            }
+            else{
+                console.log("errs: ",response.data);
+            }
 
             setBidAmount('');
             setSelectedItem(null);
         } catch (error) {
             console.error('Error placing bid:', error);
+            window.alert(error.response.data);
         }
     };
 

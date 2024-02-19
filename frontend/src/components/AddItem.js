@@ -9,7 +9,7 @@ const AddItem = () => {
     const [itemData, setItemData] = useState({
         itemName: '',
         description: '',
-        currentBid: '5',
+        currentBid: '',
         startingPrice: '',
         user:'',
     });

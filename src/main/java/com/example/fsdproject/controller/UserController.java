@@ -72,6 +72,8 @@ public class UserController {
     @CrossOrigin(origins = "${allowed.origins}")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User loginRequest) {
+        logger.info("Received signup request for username: {}", loginRequest.getUsername());
+
 
         // Check if the username exists in the database
         User user = userService.findByUsername(loginRequest.getUsername());
