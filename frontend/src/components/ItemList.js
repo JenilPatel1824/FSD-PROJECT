@@ -116,6 +116,7 @@ const ItemList = ({ user }) => {
                 amount: bidAmount,
                 bidder: userData,
             });
+            fetchItems();
             if(response.ok) {
 
                 console.log(`Bid placed successfully for item ${itemId}. Response:`, response.data);
@@ -159,11 +160,11 @@ const ItemList = ({ user }) => {
                 </div>
             </nav>
 
-            <ul>
+            <div className="item-cards-container">
                 {items
                     .filter(item => item.status !== true)
                     .map(item => (
-                        <li key={item.id} className="item-card">
+                        <div key={item.id} className="item-card">
                             <h3>{item.itemName}</h3>
                             <p>Description: {item.description}</p>
                             <p>Current Bid: {item.currentBid}</p>
@@ -172,6 +173,7 @@ const ItemList = ({ user }) => {
                             {selectedItem === item.id && (
                                 <div>
                                     <input
+                                        className="input"
                                         type="text"
                                         placeholder="Enter Bid Amount"
                                         value={bidAmount}
@@ -184,10 +186,9 @@ const ItemList = ({ user }) => {
                             {selectedItem !== item.id && (
                                 <button onClick={() => setSelectedItem(item.id)}>Place Bid</button>
                             )}
-                        </li>
-                    ))
-                }
-            </ul>
+                        </div>
+                    ))}
+            </div>
         </div>
     );
 };

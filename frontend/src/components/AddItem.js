@@ -85,10 +85,13 @@ const AddItem = () => {
             });
 
             if (response.ok) {
+                window.alert("Item Added Successfully!");
                 // Handle success
                 const responseData = await response.json();
                 console.log(responseData.data);
             } else {
+                window.alert("Error in adding Item!!!");
+
                 // Handle error
                 const errorData = await response.json();
                 console.error('Error during add-item:', errorData.error);

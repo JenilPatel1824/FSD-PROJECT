@@ -31,8 +31,7 @@ const Signup = () => {
                     'Content-Type': 'application/json',
                     // You can add other headers if needed
                 },
-                body: JSON.stringify(user), // Include the user data in the request body
-
+                body: JSON.stringify(user),
             });
 
             console.log(response.data);
@@ -41,16 +40,20 @@ const Signup = () => {
                 // Handle success
                 const responseData = await response.json();
                 console.log(responseData.data);
+                window.alert("Registered Successfully!");
 
             } else {
                 // Handle error
                 const errorData = await response.json();
+
                 console.error('Error during signup:', errorData.error);
             }
 
         } catch (error) {
             // Handle network errors or other exceptions
             console.error('Error during signup:', error.message);
+            window.alert("Error During Signup");
+
         }
     };
 

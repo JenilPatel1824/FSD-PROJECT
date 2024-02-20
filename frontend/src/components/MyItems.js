@@ -114,9 +114,9 @@ const MyItems = ({ user }) => {
                 </div>
             </nav>
 
-            <ul className="item-list">
-                {items.map((item) => (
-                    <li
+            <div className="item-cards-container">
+                {items.map((item, index) => (
+                    <div
                         key={item.id}
                         className={`item-card ${item.status ? 'sold' : ''}`}
                     >
@@ -134,18 +134,16 @@ const MyItems = ({ user }) => {
                             {displayBids[item.id] ? 'Hide Bids' : 'Check Bids'}
                         </button>
 
-
                         {displayBids[item.id] && bid.itemId === item.id && bid.bids.length > 0 && (
                             <BidTable bids={bid.bids} highlightedBidId={highestId} />
                         )}
 
-                        {/* Render "Sell" button only if item.status is false */}
                         {!item.status && (
                             <button onClick={() => handleSell(item.id)}>Sell</button>
                         )}
-                    </li>
+                    </div>
                 ))}
-            </ul>
+            </div>
         </div>
     );
 };
