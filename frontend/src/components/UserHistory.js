@@ -1,12 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import '../styles/UserHistory.css'; // Import your CSS file
+import '../styles/UserHistory.css';
+import NavBar from "./NavBar"; // Import your CSS file
+import { useNavigate } from 'react-router-dom';
+
 
 function UserHistory() {
     const location = useLocation();
     const { userData } = location.state;
+    const navigate = useNavigate();
+    const [userHistory, setUserHistory] = useState([]);
+    const [username, setUsername] = useState('');
+
 
     const [sells, setSells] = useState([]);
+
+    useEffect(() => {
+        const token = sessionStorage.getItem('token');
+        const [username, expirationTimestamp] = token.split('|');
+        setUsername(username);
+    }, []);
+
+    const handleHistory = async () => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/bids/getSoldItemByUsername/${username}`);
+            if (response.ok) {
+                const userData = await response.json();
+                setUserHistory(userData);
+                navigate('/user-history', { state: { userData } });
+            } else {
+                const errorData = await response.json();
+                console.error('Error:', errorData.error);
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
 
     useEffect(() => {
         setdata();
@@ -17,31 +46,29 @@ function UserHistory() {
         return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
     };
 
-    const formatTimestamp = (timestampArray) => {
-        if (!timestampArray) {
-            return 'N/A';
+    const formatTimestamp = (timestampComponents) => {
+        if (!timestampComponents || timestampComponents.length !== 7) {
+            return "Invalid Timestamp Components";
         }
 
-        const formattedTimestamp = new Date(
-            timestampArray[0],
-            timestampArray[1] - 1, // Months are 0-indexed in JavaScript Date object
-            timestampArray[2],
-            timestampArray[3],
-            timestampArray[4],
-            timestampArray[5],
-            timestampArray[6]
-        );
+        const [year, month, day, hour, minute, second, milliseconds] = timestampComponents;
 
-        // Formatting to "DD/MM/YYYY HH:mm:ss"
-        const day = formattedTimestamp.getDate().toString().padStart(2, '0');
-        const month = (formattedTimestamp.getMonth() + 1).toString().padStart(2, '0');
-        const year = formattedTimestamp.getFullYear();
-        const hours = formattedTimestamp.getHours().toString().padStart(2, '0');
-        const minutes = formattedTimestamp.getMinutes().toString().padStart(2, '0');
-        const seconds = formattedTimestamp.getSeconds().toString().padStart(2, '0');
+        const date = new Date(year, month - 1, day, hour, minute, second, milliseconds / 1e6);
 
-        return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+        if (isNaN(date.getTime())) {
+            return "Invalid Date";
+        }
+
+        return new Intl.DateTimeFormat('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+        }).format(date);
     };
+
 
     const setdata = async () => {
         await setSells(userData);
@@ -64,6 +91,7 @@ function UserHistory() {
                 if (response.ok) {
                     const responseData = await response.text();
                     console.log(responseData);
+                    handleHistory();
                     window.alert(responseData);
                 } else {
                     const errorData = await response.json();
@@ -77,41 +105,73 @@ function UserHistory() {
         }
     };
 
+    const handleAddItem = () => {
+        console.log('Adding a new item');
+        navigate('/add-item');
+    };
+
+    const handleMyItems = () => {
+        console.log('Viewing my items');
+        navigate('/my-items');
+    };
+
+
+
     return (
-        <div className="user-history-container">
-            <h1>History</h1>
-            <table className="history-table">
-                <thead>
-                <tr>
-                    <th>Item Name</th>
-                    <th>Item Description</th>
-                    <th>Amount</th>
-                    <th>Bid Time</th>
-                    <th>Contact Email</th>
-                    <th>Payment Status</th>
-                    <th>Payment Time</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                {userData && userData.map((sell) => (
-                    <tr key={sell.id}>
-                        <td>{sell.bid.item.itemName}</td>
-                        <td>{sell.bid.item.description}</td>
-                        <td>{sell.bid.amount}</td>
-                        <td>{formatBidTime(sell.bid.bidTime)}</td>
-                        <td>{sell.bid.item.user.email}</td>
-                        <td>{sell.payment ? 'Done' : 'Pending'}</td>
-                        <td>{formatTimestamp(sell.paymentTimestamp)}</td>
-                        <td>
-                            {!sell.payment && (
-                                <button onClick={() => handlePayment(sell.id)}>Pay</button>
-                            )}
-                        </td>
+        <div>
+            <nav className="navbar">
+                <h2>Item List</h2>
+                <div className="navbar-actions">
+                    <button className="navbar-button" onClick={handleAddItem}>
+                        Add Item
+                    </button>
+                    <button className="navbar-button" onClick={handleMyItems}>
+                        My Items
+                    </button>
+                    <button className="navbar-button" onClick={handleHistory}>
+                        History
+                    </button>
+                </div>
+            </nav>
+            <div className="user-history-container">
+
+
+                <h1>History</h1>
+                <table className="history-table">
+                    <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Item Description</th>
+                        <th>Amount</th>
+                        <th>Bid Time</th>
+                        <th>Contact Email</th>
+                        <th>Payment Status</th>
+                        <th>Payment Time</th>
+                        <th>Action</th>
                     </tr>
-                ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {userData && userData.map((sell) => (
+                        <tr key={sell.id}>
+                            <td>{sell.bid.item.itemName}</td>
+                            <td>{sell.bid.item.description}</td>
+                            <td>{sell.bid.amount}</td>
+                            <td>{formatBidTime(sell.bid.bidTime)}</td>
+                            <td>{sell.bid.item.user.email}</td>
+                            <td>{sell.payment ? 'Done' : 'Pending'}</td>
+                            <td>{formatTimestamp(sell.paymentTimestamp)}</td>
+
+
+                            <td>
+                                {!sell.payment && (
+                                    <button onClick={() => handlePayment(sell.id)}>Pay</button>
+                                )}
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }

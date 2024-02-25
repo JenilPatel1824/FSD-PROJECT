@@ -89,10 +89,13 @@ const ItemList = ({ user }) => {
                 amount: bidAmount,
                 bidder: userData,
             });
+            window.alert(`Bid placed successfully for item ${itemId}.`);
+
 
             fetchItems();
             if (response.ok) {
                 console.log(`Bid placed successfully for item ${itemId}. Response:`, response.data);
+                window.alert(`Bid placed successfully for item ${itemId}.`);
             } else {
                 console.log('Error:', response.data);
             }

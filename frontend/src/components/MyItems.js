@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import BidTable from './BidTable';
 import '../styles/MyItem.css';
+import {isLabelWithInternallyDisabledControl} from "@testing-library/user-event/dist/utils";
 
 const MyItems = ({ user }) => {
     const navigate = useNavigate();
@@ -84,6 +85,7 @@ const MyItems = ({ user }) => {
                 sold: true,
             };
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/sell/sellitem`, sell);
+            window.alert("Item sold Successfully");
             // Update the items after selling
             fetchItems();
         } catch (error) {
