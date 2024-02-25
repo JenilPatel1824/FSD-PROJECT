@@ -1,39 +1,43 @@
-// components/AddItem.js
-
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const AddItem = () => {
-    let gusername;
-
-    const [username,setUsername]=useState();
+    const [username, setUsername] = useState();
     const [itemData, setItemData] = useState({
         itemName: '',
         description: '',
         currentBid: '',
         startingPrice: '',
-        user:'',
+        user: '',
+        endTime: null, // Use null for initial value
     });
-    const [user,setUser]=useState({});
+    const [user, setUser] = useState({});
 
+    useEffect(() => {
+        const token = sessionStorage.getItem('token');
+        const [username, expirationTimestamp] = token.split('|');
+        setUsername(username);
+
+        setItemData((prevItemData) => ({
+            ...prevItemData,
+            user: user,
+        }));
+    }, [user]);
 
     useEffect(() => {
         const fetchUserByUsername = async () => {
             try {
-                console.log("Before send "+username);
                 const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${username}`);
 
                 if (response.ok) {
                     const userData = await response.json();
-                    console.log("actual response from server ",userData);
                     setUser(userData);
-                    console.log("set to user hook: ",user);
                 } else {
-                    // Handle error response
                     const errorData = await response.json();
                     console.error('Error:', errorData.error);
                 }
             } catch (error) {
-                // Handle network errors or other exceptions
                 console.error('Error:', error.message);
             }
         };
@@ -41,40 +45,21 @@ const AddItem = () => {
         fetchUserByUsername();
     }, [username]);
 
-    useEffect(() => {
-        const token = sessionStorage.getItem('token');
-
-        const [username, expirationTimestamp] = token.split('|');
-        setUsername(username);
-
-        // Set the username in the state
-        setItemData((prevItemData) => ({
-            ...prevItemData,
-            user: user,  // Here, using the updated state value
-        }));
-
-        console.log('Username:', username);
-    }, [user]);  // Add 'user' to the dependency array
-
-
     const handleChange = (e) => {
         setItemData({
             ...itemData,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    const handleEndTimeChange = (date) => {
+        setItemData({
+            ...itemData,
+            endTime: date,
         });
     };
 
     const handleAddItem = async () => {
-        // Convert startingPrice to a number
-        //const numericStartingPrice = Number(itemData.startingPrice);
-       // const numericCurrentBid = parseFloat(itemData.currentBid);
-
-
-
-
-
-        console.log("sending with: ", itemData);
-        console.log("User object", itemData.user);
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auctionitems/add-item`, {
                 method: 'POST',
@@ -85,22 +70,17 @@ const AddItem = () => {
             });
 
             if (response.ok) {
-                window.alert("Item Added Successfully!");
-                // Handle success
+                window.alert('Item Added Successfully!');
                 const responseData = await response.json();
                 console.log(responseData.data);
             } else {
-                window.alert("Error in adding Item!!!");
-
-                // Handle error
+                window.alert('Error in adding Item!!!');
                 const errorData = await response.json();
                 console.error('Error during add-item:', errorData.error);
             }
 
             console.log('Adding item:', itemData);
-
         } catch (error) {
-            // Handle network errors or other exceptions
             console.error('Error during add-item:', error.message);
         }
     };
@@ -139,6 +119,18 @@ const AddItem = () => {
                             name="startingPrice"
                             value={itemData.startingPrice}
                             onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="endTime">End Time:</label>
+                        <DatePicker
+                            selected={itemData.endTime}
+                            onChange={handleEndTimeChange}
+                            showTimeSelect
+                            timeFormat="HH:mm"
+                            timeIntervals={15}
+                            dateFormat="Pp"
                         />
                     </div>
 

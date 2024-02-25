@@ -12,7 +12,7 @@ public class Sell {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "bid_id", referencedColumnName = "id")
+    @JoinColumn(name = "bid_id", referencedColumnName = "id",unique = true)
     private Bid bid;
 
     @Column(name = "sold")

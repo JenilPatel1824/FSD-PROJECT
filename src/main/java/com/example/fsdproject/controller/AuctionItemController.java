@@ -12,10 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,9 +50,23 @@ public class AuctionItemController {
 
             // Set the user in the AuctionItem
             auctionItem.setUser(user);
+
+
+
             double startingp=auctionItem.getStartingPrice();
             auctionItem.setCurrentBid(startingp);
 
+            ZonedDateTime endTimeUtc = ZonedDateTime.ofInstant(
+                    auctionItem.getEndTime().toInstant(),
+                    ZoneId.systemDefault()
+            ).withZoneSameInstant(ZoneId.of("UTC"));
+
+            auctionItem.setEndTime(Date.from(endTimeUtc.toInstant()));
+
+            System.out.println("Adjusted End Time: " + auctionItem.getEndTime());
+
+
+            System.out.println("Original End Time: " + auctionItem.getEndTime());
 
             auctionItemService.saveAuctionItem(auctionItem);
             Map<String, String> response = new HashMap<>();

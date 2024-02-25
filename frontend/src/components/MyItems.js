@@ -7,8 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import BidTable from './BidTable';
 import '../styles/MyItem.css';
-import {computeHeadingLevel} from "@testing-library/react";
-
 
 const MyItems = ({ user }) => {
     const navigate = useNavigate();
@@ -16,7 +14,7 @@ const MyItems = ({ user }) => {
     const [bid, setBid] = useState({ itemId: null, bids: [] });
     const [username, setUsername] = useState();
     const [displayBids, setDisplayBids] = useState({});
-    const [highestId,setHighestId]=useState('');
+    const [highestId, setHighestId] = useState('');
 
     useEffect(() => {
         const token = sessionStorage.getItem('token');
@@ -60,20 +58,17 @@ const MyItems = ({ user }) => {
             }));
 
             console.log("r done");
-            let highestbid=0;
+            let highestbid = 0;
 
-            for (let bd of bid.bids)
-            {
+            for (let bd of bid.bids) {
                 console.log(bd);
-                if(bd.amount>highestbid)
-                {
-
-                    highestbid=bd.amount;
+                if (bd.amount > highestbid) {
+                    highestbid = bd.amount;
                     setHighestId(bd.id);
                 }
             }
-            console.log("highest bid id: ",highestId);
-            console.log("highest bid is: ",highestbid);
+            console.log("highest bid id: ", highestId);
+            console.log("highest bid is: ", highestbid);
         } catch (error) {
             console.error('Error fetching bids from server:', error.response?.status, error.response?.data);
         }
@@ -115,15 +110,15 @@ const MyItems = ({ user }) => {
             </nav>
 
             <div className="item-cards-container">
-                {items.map((item, index) => (
+                {items.map((item) => (
                     <div
                         key={item.id}
                         className={`item-card ${item.status ? 'sold' : ''}`}
                     >
                         <h3>
-                            <span style={{ color: item.status ? 'green' : 'black' }}>
-                                {item.itemName}
-                            </span>
+              <span style={{ color: item.status ? 'green' : 'black' }}>
+                {item.itemName}
+              </span>
                             {item.status && <FontAwesomeIcon icon={faCheck} className="sold-icon" />}
                         </h3>
                         <p>Description: {item.description}</p>

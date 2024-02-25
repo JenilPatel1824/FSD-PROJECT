@@ -1,40 +1,29 @@
-// components/ItemList.js
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import CountdownTimer from './CountdownTimer';
 import '../styles/ItemList.css';
 
 const ItemList = ({ user }) => {
     const navigate = useNavigate();
     const [items, setItems] = useState([]);
-
     const [username, setUsername] = useState('');
     const [bidAmount, setBidAmount] = useState('');
     const [selectedItem, setSelectedItem] = useState(null);
-    const [userobj, setUserobj] = useState({});
     const [userHistory, setUserHistory] = useState([]);
-
-    const [itemId, setItemId] = useState('');
-    const [item, setItem] = useState({});
 
     useEffect(() => {
         fetchItems();
     }, [username]);
 
-    let guname;
-
     useEffect(() => {
         const token = sessionStorage.getItem('token');
         const [username, expirationTimestamp] = token.split('|');
         setUsername(username);
-        console.log('Username:', username);
-        guname=username;
     }, []);
 
     const fetchItems = async () => {
         try {
-            console.log("===>>>>"+username);
             const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/auctionitems/items?username=${username}`);
             setItems(response.data.data);
         } catch (error) {
@@ -42,16 +31,11 @@ const ItemList = ({ user }) => {
         }
     };
 
-
-
     const fetchUserByUsername = async () => {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${username}`);
-
             if (response.ok) {
                 const userData = await response.json();
-                setUserobj(userData);
-                console.log("user set: ", userData);
                 return userData;
             } else {
                 const errorData = await response.json();
@@ -62,19 +46,13 @@ const ItemList = ({ user }) => {
         }
     };
 
-
     const handleHistory = async () => {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/bids/getSoldItemByUsername/${username}`);
-
             if (response.ok) {
                 const userData = await response.json();
-                await setUserHistory(userData);
-                console.log(userHistory);
-                console.log("user set: ", userData);
+                setUserHistory(userData);
                 navigate('/user-history', { state: { userData } });
-
-                return userHistory;
             } else {
                 const errorData = await response.json();
                 console.error('Error:', errorData.error);
@@ -84,16 +62,11 @@ const ItemList = ({ user }) => {
         }
     };
 
-
     const fetchItemByItemId = async (itemId) => {
         try {
-            console.log("Item called");
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auctionitems/${itemId}`);
-
             if (response.ok) {
                 const itemData = await response.json();
-                setItem(itemData);
-                console.log("item set: ", itemData);
                 return itemData;
             } else {
                 const errorData = await response.json();
@@ -109,20 +82,19 @@ const ItemList = ({ user }) => {
             const userData = await fetchUserByUsername();
             const itemData = await fetchItemByItemId(itemId);
 
-            console.log("Sending Request for bid with user: ", userData + " amount: " + bidAmount + " for item: " + itemData);
+            console.log(`Sending Request for bid with user: ${userData} amount: ${bidAmount} for item: ${itemData}`);
 
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auctionitems/placebid`, {
                 item: itemData,
                 amount: bidAmount,
                 bidder: userData,
             });
-            fetchItems();
-            if(response.ok) {
 
+            fetchItems();
+            if (response.ok) {
                 console.log(`Bid placed successfully for item ${itemId}. Response:`, response.data);
-            }
-            else{
-                console.log("errs: ",response.data);
+            } else {
+                console.log('Error:', response.data);
             }
 
             setBidAmount('');
@@ -162,15 +134,17 @@ const ItemList = ({ user }) => {
 
             <div className="item-cards-container">
                 {items
-                    .filter(item => item.status !== true)
-                    .map(item => (
+                    .filter((item) => item.status !== true)
+                    .map((item) => (
                         <div key={item.id} className="item-card">
                             <h3>{item.itemName}</h3>
+
                             <p>Description: {item.description}</p>
                             <p>Current Bid: {item.currentBid}</p>
                             <p>Starting Price: {item.startingPrice}</p>
+                            <p>Time Left: <CountdownTimer endTime={item.endTime} itemId={item.id} /></p>
 
-                            {selectedItem === item.id && (
+                            {selectedItem === item.id ? (
                                 <div>
                                     <input
                                         className="input"
@@ -181,9 +155,7 @@ const ItemList = ({ user }) => {
                                     />
                                     <button onClick={() => handlePlaceBid(item.id)}>Place Bid</button>
                                 </div>
-                            )}
-
-                            {selectedItem !== item.id && (
+                            ) : (
                                 <button onClick={() => setSelectedItem(item.id)}>Place Bid</button>
                             )}
                         </div>

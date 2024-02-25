@@ -1,78 +1,50 @@
-/* AddItem.css */
-
-.box {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    width: max-content;
-    margin: 20px auto;
+.add-item-container {
+    max-width: 600px;
+    margin: 0 auto;
     padding: 20px;
-}
-
-h2 {
-    color: #333;
-    font-size: 1.5em;
-    margin-bottom: 20px;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
 .form-group {
     margin-bottom: 20px;
-    width: 100%;
 }
 
 label {
-    text-align: left;
-    margin-bottom: 8px;
-    font-weight: bold;
+    display: block;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
 }
 
 input,
-textarea {
+textarea,
+button,
+.react-datepicker-wrapper,
+.react-datepicker__input-container {
     width: 100%;
     padding: 10px;
+    font-size: 1rem;
     border: 1px solid #ddd;
-    border-radius: 4px;
-    outline: none;
+    border-radius: 5px;
+    margin-top: 5px;
 }
 
 button {
-    background-color: #3498db;
+    background-color: #4caf50;
     color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 20px;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
 button:hover {
-    background-color: #2980b9;
+    background-color: #45a049;
 }
 
-/* Icon Hover Animation */
-button:hover::after {
-    content: ' ➕';
-    display: inline-block;
-    transform: rotate(0deg);
-    transition: transform 0.3s ease-in-out;
-}
-
-button:hover::before {
-    content: '➕ ';
-    display: inline-block;
-    transform: rotate(0deg);
-    transition: transform 0.3s ease-in-out;
-}
-
-button:hover::before,
-button:hover::after {
-    display: inline-block;
-    position: relative;
-    top: 4px;
-    left: 2px;
+.box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
 }

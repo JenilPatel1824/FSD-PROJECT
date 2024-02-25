@@ -3,6 +3,7 @@ package com.example.fsdproject.entity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 // AuctionItem.java
@@ -37,6 +38,18 @@ public class AuctionItem {
     @Column(name = "created_at")
     private Date createdAt;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "expiry_time", columnDefinition = "TIMESTAMP")
+    private Date endTime;
+
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
 
     private boolean status;
 
@@ -53,6 +66,8 @@ public class AuctionItem {
     public Date getCreatedAt() {
         return createdAt;
     }
+
+
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
