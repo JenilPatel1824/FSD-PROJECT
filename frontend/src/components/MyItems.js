@@ -10,6 +10,8 @@ import '../styles/MyItem.css';
 import {isLabelWithInternallyDisabledControl} from "@testing-library/user-event/dist/utils";
 
 const MyItems = ({ user }) => {
+
+    const [userHistory, setUserHistory] = useState([]);
     const navigate = useNavigate();
     const [items, setItems] = useState([]);
     const [bid, setBid] = useState({ itemId: null, bids: [] });
@@ -93,6 +95,23 @@ const MyItems = ({ user }) => {
         }
     };
 
+    const handleHistory = async () => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/bids/getSoldItemByUsername/${username}`);
+            if (response.ok) {
+                const userData = await response.json();
+                setUserHistory(userData);
+                navigate('/user-history', { state: { userData } });
+            } else {
+                const errorData = await response.json();
+                console.error('Error:', errorData.error);
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
+
+
     useEffect(() => {
         fetchItems();
     }, [username]);
@@ -107,6 +126,9 @@ const MyItems = ({ user }) => {
                     </button>
                     <button className="navbar-button" onClick={() => navigate('/my-items')}>
                         My Items
+                    </button>
+                    <button className="navbar-button" onClick={handleHistory}>
+                        History
                     </button>
                 </div>
             </nav>
@@ -138,6 +160,8 @@ const MyItems = ({ user }) => {
                         {!item.status && (
                             <button onClick={() => handleSell(item.id)}>Sell</button>
                         )}
+
+
                     </div>
                 ))}
             </div>
