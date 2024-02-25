@@ -145,7 +145,7 @@ const AddItem = () => {
                 <h2>Add Item</h2>
                 <form>
                     <div className="form-group">
-                    <label htmlFor="itemName">Item Name:</label>
+                        <label htmlFor="itemName" style={{ display: 'block' }}>Item Name:</label>
                         <input
                             type="text"
                             id="itemName"
@@ -156,7 +156,7 @@ const AddItem = () => {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="description">Description:</label>
+                        <label htmlFor="description" style={{ display: 'block' }}>Description:</label>
                         <textarea
                             id="description"
                             name="description"
@@ -166,7 +166,7 @@ const AddItem = () => {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="startingPrice">Starting Price:</label>
+                        <label htmlFor="startingPrice" style={{ display: 'block' }}>Starting Price:</label>
                         <input
                             type="text"
                             id="startingPrice"
@@ -177,7 +177,7 @@ const AddItem = () => {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="endTime">End Time:</label>
+                        <label htmlFor="endTime" style={{ display: 'block' }}>End Time:</label>
                         <DatePicker
                             selected={itemData.endTime}
                             onChange={handleEndTimeChange}
@@ -195,6 +195,7 @@ const AddItem = () => {
             </div>
         </div>
     );
+
 };
 
 export default AddItem;
