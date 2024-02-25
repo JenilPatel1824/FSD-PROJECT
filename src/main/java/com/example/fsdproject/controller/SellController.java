@@ -81,7 +81,10 @@ public class SellController {
 
         System.out.println("Sell id is: "+sellId);
 
+
         Optional<Sell> optionalSell=sellService.findById(sellId);
+
+
 
         if (optionalSell.isPresent()) {
             Sell sell = optionalSell.get();
@@ -91,7 +94,9 @@ public class SellController {
             sell.setPayment(true);
             System.out.println("Sell payment is: "+sell.getPayment());
 
-            sell.setPaymentTimestamp(LocalDateTime.now());  // Set payment timestamp
+            sell.setPaymentTimestamp(LocalDateTime.now());
+            System.out.println("Sell Time is: "+sell.getPaymentTimestamp());
+// Set payment timestamp
             sellService.saveSell((sell));
 
 
