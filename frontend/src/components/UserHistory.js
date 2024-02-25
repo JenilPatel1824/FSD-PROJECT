@@ -110,6 +110,17 @@ function UserHistory() {
         navigate('/add-item');
     };
 
+    const handleLogout = () => {
+
+        const token = sessionStorage.getItem('token');
+        if(token)
+        {
+            sessionStorage.removeItem('token');
+        }
+        console.log('Adding a new item');
+        navigate('/login');
+    };
+
     const handleMyItems = () => {
         console.log('Viewing my items');
         navigate('/my-items');
@@ -122,6 +133,9 @@ function UserHistory() {
             <nav className="navbar">
                 <h2>Item List</h2>
                 <div className="navbar-actions">
+                    <button className="navbar-button" onClick={() => navigate('/item')}>
+                        Home
+                    </button>
                     <button className="navbar-button" onClick={handleAddItem}>
                         Add Item
                     </button>
@@ -130,6 +144,9 @@ function UserHistory() {
                     </button>
                     <button className="navbar-button" onClick={handleHistory}>
                         History
+                    </button>
+                    <button className="navbar-button" onClick={handleLogout}>
+                        Logout
                     </button>
                 </div>
             </nav>

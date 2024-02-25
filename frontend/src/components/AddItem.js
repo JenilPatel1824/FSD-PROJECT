@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import {useNavigate} from "react-router-dom";
+
 
 const AddItem = () => {
+
+    const [userHistory, setUserHistory] = useState([]);
+
+    const navigate = useNavigate();
+
     const [username, setUsername] = useState();
     const [itemData, setItemData] = useState({
         itemName: '',
@@ -24,6 +31,22 @@ const AddItem = () => {
             user: user,
         }));
     }, [user]);
+
+    const handleHistory = async () => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/bids/getSoldItemByUsername/${username}`);
+            if (response.ok) {
+                const userData = await response.json();
+                setUserHistory(userData);
+                navigate('/user-history', { state: { userData } });
+            } else {
+                const errorData = await response.json();
+                console.error('Error:', errorData.error);
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
 
     useEffect(() => {
         const fetchUserByUsername = async () => {
@@ -85,13 +108,44 @@ const AddItem = () => {
         }
     };
 
+    const handleLogout = () => {
+
+        const token = sessionStorage.getItem('token');
+        if(token)
+        {
+            sessionStorage.removeItem('token');
+        }
+        console.log('Adding a new item');
+        navigate('/login');
+    };
+
     return (
         <div className="box">
             <div className="add-item-container">
+                <nav className="navbar">
+                    <h2>Item List</h2>
+                    <div className="navbar-actions">
+                        <button className="navbar-button" onClick={() => navigate('/item')}>
+                            Home
+                        </button>
+                        <button className="navbar-button" onClick={() => navigate('/add-item')}>
+                            Add Item
+                        </button>
+                        <button className="navbar-button" onClick={() => navigate('/my-items')}>
+                            My Items
+                        </button>
+                        <button className="navbar-button" onClick={handleHistory}>
+                            History
+                        </button>
+                        <button className="navbar-button" onClick={handleLogout}>
+                            Logout
+                        </button>
+                    </div>
+                </nav>
                 <h2>Add Item</h2>
                 <form>
                     <div className="form-group">
-                        <label htmlFor="itemName">Item Name:</label>
+                    <label htmlFor="itemName">Item Name:</label>
                         <input
                             type="text"
                             id="itemName"
