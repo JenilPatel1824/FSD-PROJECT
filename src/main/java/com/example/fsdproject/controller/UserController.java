@@ -25,11 +25,8 @@ import org.springframework.http.HttpStatus;
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-
     @Autowired
     private UserService userService;
-
-
 
     @CrossOrigin(origins = "*")
     @GetMapping("/hello")
