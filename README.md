@@ -70,6 +70,12 @@ An online auction system built with React, Spring Boot, and MySQL, allowing user
 
 
 
+## Hosted Project
+
+
+
+The online auction system is hosted on [https://main.d1zcac5ixvp1ar.amplifyapp.com/](https://main.d1zcac5ixvp1ar.amplifyapp.com/).
+
 ## Usage
 
 
