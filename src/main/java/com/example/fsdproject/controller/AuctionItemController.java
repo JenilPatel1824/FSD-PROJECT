@@ -21,7 +21,7 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// AuctionItemController.java
+
 @RestController
 @CrossOrigin(origins = "${allowed.origins}")
 @RequestMapping("/api/auctionitems")
@@ -210,6 +210,8 @@ public class AuctionItemController {
 
 
 }
+
+
 
 
 
